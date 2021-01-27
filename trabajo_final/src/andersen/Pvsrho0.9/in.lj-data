@@ -1,0 +1,8 @@
+864    #número de partículas
+0.6    #densidad
+0.9    #temperatura de referencia
+0.005  #paso temporal
+2.5    #radio de corte
+10000   #pasos de equilibración
+30000000   #pasos de medición
+5      #nu

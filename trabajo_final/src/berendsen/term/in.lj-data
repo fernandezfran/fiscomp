@@ -1,0 +1,10 @@
+864    #número de partículas
+1.0    #densidad inicial
+0.005  #paso temporal
+2.5    #radio de corte
+2.0    #temperatura de referencia
+2000   # tau_T = tau*dt
+1.0    #presion de referencia
+10000  # tau_P = tau*dt (contemplar compresibilidad isot)
+10000   #pasos de equilibración
+50000   #pasos de medición
