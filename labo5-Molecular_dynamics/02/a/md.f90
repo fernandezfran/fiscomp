@@ -12,7 +12,7 @@ integer              :: i, teq, trun, j
 
 !### definición de parámetros iniciales
 N      = 500
-rho    = 1.2_pr
+rho    = 0.8_pr
 T0     = 1.0_pr
 V      = real(N,pr)/rho
 L      = V**(1._pr/3._pr)

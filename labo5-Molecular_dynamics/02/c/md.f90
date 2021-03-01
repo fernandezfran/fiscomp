@@ -12,7 +12,7 @@ integer              :: i, teq, tscal, trun, j
 
 !### definición de parámetros iniciales
 N      = 500
-rho    = 1.2_pr
+rho    = 0.8_pr
 T0     = 1.0_pr
 V      = real(N,pr)/rho
 L      = V**(1._pr/3._pr)
@@ -35,7 +35,7 @@ call forces                  !fuerzas iniciales
 Nmsd = 2000
 allocate( ntime(Nmsd), r2t(Nmsd) )
 allocate( x0(N,Nmsd), y0(N,Nmsd), z0(N,Nmsd) )
-call diffusion(0,1)
+!call diffusion(0,1)
 
 !
 
@@ -49,17 +49,20 @@ ti = 0._pr
 
 open(36, file='trajectory.xyz', status='replace')
 write(36,*) N; write(36,*) !write xyz
-do j = 1, N; write(36,'(A,3(E15.6,2x))') 'Ar', x(j), y(j), z(j); enddo
+do j = 1, N
+    write(36,'(A,3(E15.6,2x),3(I3,x))') 'Ar', x(j), y(j), z(j), ix(j), iy(j), iz(j)
+enddo
 
 open(47, file='thermo.dat', status='replace')
 write(47,'(A,I4)') '# numero de partículas   : ', N
 write(47,'(A,F6.4)') '# densidad               : ', rho
 write(47,'(A,F6.4)') '# temperatura inicial    : ', T0
 write(47,'(A,E9.3)') '# volumen                : ', V
+write(47,'(A,E15.6)') '# largo de la caja      : ', L
 write(47,'(A,F6.4)') '# rcut                   : ', rcut
 write(47,'(A,F6.4)') '# paso temporal          : ', dt
-write(47,'(A,I4)') '# pasos de equilibración : ', teq
-write(47,'(A,I4)') '# pasos de medición      : ', trun
+write(47,'(A,I7)') '# pasos de equilibración : ', teq
+write(47,'(A,I7)') '# pasos de medición      : ', trun
 write(47,'(A,I4)') '# reescaleo de vel cada  : ', tscal
 write(47,'(A)') '# t, Ekin, Epot, Etot, Temp, Pres'
 
@@ -74,12 +77,6 @@ do i = 1, teq
         vy(:) = Tsf*vy(:)
         vz(:) = Tsf*vz(:)
     endif 
-    
-    !if (mod(i,100) == 0) then !: write thermo & trajectory
-    !    write(36,*) N; write(36,*)
-    !    do j = 1, N; write(36,'(A,3(E15.6,2x))') 'Ar', x(j), y(j), z(j); enddo
-    !    write(47,'(6(E15.6,x))') t, Ekin, Epot, Ekin + Epot, Temp, Pres
-    !endif
 
     t = ti + real(i,pr)*dt
 enddo
@@ -94,10 +91,18 @@ do i = teq + 1, teq + trun
     !vy(:) = Tsf*vy(:)
     !vz(:) = Tsf*vz(:)
 
-    call diffusion(1,1)
+    if (mod(i,100) == 0) then !: write thermo & trajectory
+        write(36,*) N; write(36,*)
+        do j = 1, N
+            write(36,'(A,3(E15.6,2x),3(I3,x))') 'Ar', x(j), y(j), z(j), ix(j), iy(j), iz(j)
+        enddo
+        write(47,'(6(E15.6,x))') t, Ekin, Epot, Ekin + Epot, Temp, Pres
+    endif
+    
+    !call diffusion(1,1)
 
     t = ti + real(i,pr)*dt
 enddo
-call diffusion(2,1)
+!call diffusion(2,1)
 
 end program
